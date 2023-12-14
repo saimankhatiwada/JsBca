@@ -1,71 +1,38 @@
-let student = {
-    firstName:"",
-    lastName:"",
-    tuRegNUmber:""
-};
-
-let studentList = [];
-
-let first = document.getElementById("firstName").value;
-let last = document.getElementById("lastName").value;
-let regNumber = document.getElementById("regNumber").value;
-
-function handleSubmit()
+function createCookie(name, value, days)
 {
-    student.firstName = first;
-    student.lastName = last;
-    student.tuRegNUmber = regNumber;
-    studentList.push(student);
-    setLocalStorageStudent(studentList);
-    refreshPage();
-}
-
-function setLocalStorageStudent(value)
-{
-    let tempData = JSON.stringify(value);
-    localStorage.setItem("studentList", tempData);
-}
-
-function getLocalStorageData()
-{
-    const studentListData = localStorage.getItem("studentList");
-
-    if(!studentListData)
+    let expiers = "";
+    if(days)
     {
-        return null;
+        let date = new Date();
+        date.setTime(date.getTime()+(days*24*60*60*1000));
+        expiers = "; expires="+date.toUTCString();
     }
 
-    const studentLists = JSON.parse(studentListData);
-
-    studentList = studentLists;
-
-    displayTableDataForStudent();
+    document.cookie = name+"="+value+expiers+"; path=/";
 }
 
-function displayTableDataForStudent()
+function readCookie(name)
 {
-    studentList.forEach((element) => {
-        const row = document.createElement("tr");
-        const firstNameCell = document.createElement("td");
-        const lastNameCell = document.createElement("td");
-        const tuRegNumberCell = document.createElement("td");
-
-        firstNameCell.textContent = element.firstName;
-        lastNameCell.textContent = element.lastName;
-        tuRegNumberCell.textContent = element.tuRegNUmber;
-
-        row.appendChild(firstNameCell);
-        row.appendChild(lastNameCell);
-        row.appendChild(tuRegNumberCell);
-
-        document.getElementById("tableBody").appendChild(row);
-    });
-    
+    let nameData = name + "=";
+    let ca = document.cookie.split(";");
+    for(let i = 0; i < ca.length; i++)
+    {
+        let c = ca[i];
+        while(c.charAt(0)==" ") c = c.substring(1, c.length);
+        if(c.indexOf(nameData) == 0)
+        {
+            return c.substring(nameData.length, c.length);
+        }
+    }
+    return null;
 }
 
-function refreshPage()
+function remove(name)
 {
-    location.reload();
+    createCookie(name,"",-1);
 }
 
-getLocalStorageData();
+createCookie("userName", "abcd", 8);
+
+document.write(readCookie("userName"));
+
